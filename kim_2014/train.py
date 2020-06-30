@@ -1,0 +1,91 @@
+import os
+import sys
+import time
+import copy
+import torch
+import torch.nn.functional as F
+from torch.autograd import Variable
+from torch.nn import CrossEntropyLoss
+
+""" Code structure -- have ALL hyperparameters be adjustable in main.py
+    batch_size, learning_rate, model parameters, etc. ALL will flow into 
+    function calls and instances from main.py """
+
+
+def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, learning_rate=1.0):
+
+    print("===== HYPERPARAMETERS =====")
+    print("batch_size=", batch_size)
+    print("epochs=", n_epochs)
+    print("learning_rate=", learning_rate)
+    print("-" * 30)
+
+    # Adadelta with L2 regularization (weight_decay=0)
+    params_to_update = model.parameters()
+    optimizer = torch.optim.Adadelta(params_to_update, lr=learning_rate, rho=0.9, eps=1e-06, weight_decay=0)
+
+    since = time.time()
+    n_batches = len(train_loader)
+    print_every = n_batches // 10
+    val_loss_history = []
+    val_acc_history = []
+    train_loss_history = []
+    train_acc_history = []
+    best_acc = 0.0
+    best_model_wts = copy.deepcopy(model.state_dict())
+
+    for epoch in range(n_epochs):
+        print('Epoch {}/{}'.format(epoch + 1, n_epochs))
+        print('-' * 10)
+
+        model.train()
+        batch_loss = 0.0
+        training_loss = 0.0
+        training_corrects = 0
+
+        # One loop through training set
+        for i, data in enumerate(train_loader, 0):
+            inputs, labels = data
+            inputs, labels = Variable(inputs), Variable(labels)
+            inputs, labels = inputs.to(device), labels.to(device)
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            _, predicted = torch.max(outputs.detach(), dim=1)
+            loss = criterion(outputs, labels)
+            batch_loss += loss
+            training_corrects += (predicted == labels).double().sum().item()
+
+            loss.backward()
+            optimizer.step()
+
+            # Print average batch loss and time elapsed after every 10 mini-batches
+            if (i + 1) % (print_every + 1) == 0:
+                print("Epoch {}, {:d}% \t Average Batch Loss: {:.2f} took: {:.2f}s".format(
+                    epoch + 1, int(100 * (i + 1) / n_batches), batch_loss / print_every, time.time() - since))
+                # Reset running batch loss
+                training_loss += batch_loss
+                batch_loss = 0.0
+
+        average_train_loss = training_loss / n_batches
+        print("Average Training Loss Per Batch: {:.2f}".format(average_train_loss))
+        average_train_accuracy = 100 * training_corrects / (n_batches * batch_size)
+        print("Training Accuracy: % d %%" % average_train_accuracy)
+        train_loss_history.append(average_train_loss)
+        train_acc_history.append(average_train_accuracy)
+
+        # At the end of the epoch, do a pass on the validation set
+        running_val_loss = 0
+        accuracy = 0
+        for inputs, labels in val_loader:
+            inputs, labels = Variable(inputs), Variable(labels)
+            inputs, labels = inputs.to(device), labels.to(device)
+
+            val_outputs = model(inputs)
+            val_loss = criterion(val_outputs, labels)
+            running_val_loss += val_loss.item()
+            val_loss_history.append(val_loss)
+
+        # Printing epoch summary
+        print("Validation loss = {:.2f}".format(running_val_loss / len(val_loader)))
+
+
