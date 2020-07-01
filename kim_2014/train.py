@@ -4,8 +4,8 @@ import time
 import copy
 import torch
 import torch.nn.functional as F
+from torch import nn
 from torch.autograd import Variable
-from torch.nn import CrossEntropyLoss
 
 """ Code structure -- have ALL hyperparameters be adjustable in main.py
     batch_size, learning_rate, model parameters, etc. ALL will flow into 
@@ -31,8 +31,13 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     val_acc_history = []
     train_loss_history = []
     train_acc_history = []
-    best_acc = 0.0
     best_model_wts = copy.deepcopy(model.state_dict())
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    criterion = nn.CrossEntropyLoss()
+    if torch.cuda.is_available():
+        model = model.cuda()
+        criterion = criterion.cuda()
 
     for epoch in range(n_epochs):
         print('Epoch {}/{}'.format(epoch + 1, n_epochs))
@@ -88,4 +93,4 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         # Printing epoch summary
         print("Validation loss = {:.2f}".format(running_val_loss / len(val_loader)))
 
-
+    return best_model_wts
