@@ -33,7 +33,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     train_acc_history = []
     best_model_wts = copy.deepcopy(model.state_dict())
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
     if torch.cuda.is_available():
         model = model.cuda()

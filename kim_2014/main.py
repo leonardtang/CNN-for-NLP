@@ -1,15 +1,17 @@
-import torch.nn as nn
 import torch
 import random
+import torchtext
+import model
+import train
 from torchtext import data
 from torchtext import datasets
 
-# Hyper-parameters
+# Training hyper-parameters
 batch_size = 16
 n_epochs = 20
 learning_rate = 1.0
 
-# Architecture parameters
+# Architecture hyper-parameters
 num_embeddings = 500  # Length of input phrase
 embedding_dim = 300  # Default for Google's word2vec
 input_channels = 1
@@ -21,29 +23,27 @@ classes = 2
 # Setting random seeds for data loading:
 SEED = 42
 torch.manual_seed(SEED)
+random.setstate(SEED)
 torch.backends.cudnn.deterministic = True
+
+# Loading device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def load_imdb(TEXT=data.Field(tokenize='spacy'), LABEL=data.LabelField(dtype=torch.float)):
     train_data, test_data = datasets.IMDB.splits(TEXT, LABEL)
-    train_data, val_data = train_data.split(split_ratio=0.8, random_state=random.seed(SEED))
-    return train_data, test_data
+    train_data, val_data = train_data.split(split_ratio=0.7, random_state=random.seed(SEED))
+    return train_data, val_data, test_data
 
 
-def get_train_loader(batch_size, train_set, train_sampler):
-    """ Gets a batch sample of training data; called during training process for each batch """
-    train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, sampler=train_sampler, num_workers=8)
-    return train_loader
-
-
-def get_val_loader(train_set, test_set, val_sampler):
-    val_loader = torch.utils.data.DataLoader(test_set, batch_size=128, sampler=val_sampler, num_workers=8)
-    return val_loader
-
+def get_iterators(batch_size, train_data, val_data, test_data):
+    train_iterator, val_iterator, test_iterator = torchtext.data.BucketIterator.splits(
+                                                            (train_data, val_data, test_data),
+                                                            batch_size=batch_size)
+    return train_iterator, val_iterator, test_iterator
 
 
 """ Figure out word2vec tokinization? """
 
-""" BucketIterator """
+net = model.KimModel()
 
-model
