@@ -65,14 +65,14 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
 
             # Print average batch loss and time elapsed after every 10 mini-batches
             if (i + 1) % (print_every + 1) == 0:
-                print("Epoch {}, {:d}% \t Average Batch Loss: {:.2f} took: {:.2f}s".format(
+                print("Epoch {}, {:d}% \t Average Batch Loss: {.2f} took: {.2f}s".format(
                     epoch + 1, int(100 * (i + 1) / n_batches), batch_loss / print_every, time.time() - since))
                 # Reset running batch loss
                 training_loss += batch_loss
                 batch_loss = 0.0
 
         average_train_loss = training_loss / n_batches
-        print("Average Training Loss Per Batch: {:.2f}".format(average_train_loss))
+        print("Average Training Loss Per Batch: {.2f}".format(average_train_loss))
         average_train_accuracy = 100 * training_corrects / (n_batches * batch_size)
         print("Training Accuracy: % d %%" % average_train_accuracy)
         train_loss_history.append(average_train_loss)
@@ -80,7 +80,8 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
 
         # At the end of the epoch, do a pass on the validation set
         running_val_loss = 0
-        accuracy = 0
+        val_accuracy = 0
+        val_corrects = 0
         for inputs, labels in val_loader:
             inputs, labels = Variable(inputs), Variable(labels)
             inputs, labels = inputs.to(device), labels.to(device)
@@ -90,7 +91,17 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             running_val_loss += val_loss.item()
             val_loss_history.append(val_loss)
 
-        # Printing epoch summary
-        print("Validation loss = {:.2f}".format(running_val_loss / len(val_loader)))
+            _, predicted = torch.max(val_outputs.detach(), dim=1)
+            val_corrects += (predicted == labels).double().sum().item()
+
+        average_val_accuracy = 100 * val_corrects / (n_batches * len(val_loader))
+        average_val_loss = running_val_loss / len(val_loader)
+        val_loss_history.append(average_val_loss)
+        val_acc_history.append(val_accuracy)
+
+        print("Validation Loss: {.2f}".format(average_val_loss))
+        print("Validation Accuracy: % d %%" % average_val_accuracy)
+
+    print("Training finished in {.2f}".format(time.time() - since))
 
     return best_model_wts

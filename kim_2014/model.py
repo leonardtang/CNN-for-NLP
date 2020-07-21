@@ -1,25 +1,24 @@
 import torch
 import torch.nn.functional as F
+import gensim
 
 
 class KimModel(torch.nn.Module):
     """ One layer CNN with (def=100) filters of (def=[3,4,5]) varying heights; dropout and L2 weight constraint """
 
     # Takes in word2vec embeddings from main
-    def __init__(self):  # Probably should have default param values here
+    def __init__(self, embedding_dim=300, input_channels=1, filter_heights=[3, 4, 5],
+                 filter_count=100, dropout_p=0.5, classes=2):
+
         super(KimModel, self).__init__()
 
-        num_embeddings = 500  # THIS SHOULD COME FROM MAIN (length of input words)
-        embedding_dim = 300  # Default for Google's word2vec
-        input_channels = 1  # Input is a single Word Count x Feature Dimension matrix
-        filter_heights = [3, 4, 5]  # Suggested heights from the paper
-        filter_count = 100  # Default from paper (100 feature maps per filter height)
-        dropout_p = 0.5  # Paper default
-        classes = 2
-
-        # Careful about embeddings (basically dictionary mapping words to vectors)
-        # Embeddings: the input to the module is a list of indices, and the output is the corresponding word embeddings
-        self.embed = torch.nn.Embedding(num_embeddings=num_embeddings, embedding_dim=embedding_dim)
+        # Embeddings: the input to the module is a list of indices, and the output is the corresponding feature vectors
+        # Using word2vec features pre-trained on Google News corpus
+        model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin',
+                                                                binary=True,
+                                                                unicode_errors='ignore')
+        weights = torch.FloatTensor(model.vectors)
+        self.embed = torch.nn.Embedding.from_pretrained(torch.FloatTensor(weights))
         # There are (filter_heights) sets of (filter_count) different channels IN PARALLEL
         self.convs1 = torch.nn.ModuleList([torch.nn.Conv2d(in_channels=input_channels,
                                                            out_channels=filter_count,
