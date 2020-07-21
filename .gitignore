@@ -104,3 +104,4 @@ fabric.properties
 glove.6B.50d.txt
 GoogleNews-vectors-negative300.bin
 aclImdb/
+.data/
