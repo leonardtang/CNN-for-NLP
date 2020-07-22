@@ -94,7 +94,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             _, predicted = torch.max(val_outputs.detach(), dim=1)
             val_corrects += (predicted == labels).double().sum().item()
 
-        average_val_accuracy = 100 * val_corrects / (n_batches * len(val_loader))
+        average_val_accuracy = 100 * val_corrects / (n_batches * batch_size)
         average_val_loss = running_val_loss / len(val_loader)
         val_loss_history.append(average_val_loss)
         val_acc_history.append(val_accuracy)
