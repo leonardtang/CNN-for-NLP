@@ -57,7 +57,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             outputs = model(inputs)
             _, predicted = torch.max(outputs.detach(), dim=1)
             loss = criterion(outputs, labels)
-            batch_loss += loss
+            batch_loss += loss.item()
             training_corrects += (predicted == labels).double().sum().item()
 
             loss.backward()

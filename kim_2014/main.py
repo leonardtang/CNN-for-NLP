@@ -32,11 +32,15 @@ print(device)
 
 # Make sure to pip install spacy and python -m spacy download en
 # What even is spacy? Clarify
-def load_imdb(TEXT=data.Field(tokenize='spacy'), LABEL=data.LabelField(dtype=torch.float)):
+# MUST have batch_first=TRUE to have dimensions be of form (batch, height) (for inputting into model)
+def load_imdb(TEXT=data.Field(tokenize='spacy', batch_first=True),
+              LABEL=data.LabelField(dtype=torch.long, batch_first=True)):
     train_data, test_data = datasets.IMDB.splits(TEXT, LABEL)
     train_data, val_data = train_data.split(split_ratio=0.8, random_state=random.seed(SEED))
-    # TEXT.build_vocab(train)
-    return train_data, val_data, test_data
+    TEXT.build_vocab(train_data, vectors="glove.6B.300d", max_size=10000, min_freq=10)
+    LABEL.build_vocab(test_data)
+    embedding_layer = torch.nn.Embedding.from_pretrained(TEXT.vocab.vectors)
+    return train_data, val_data, test_data, embedding_layer
 
 
 def get_iterators(batch_size, train_data, val_data, test_data):
@@ -46,13 +50,12 @@ def get_iterators(batch_size, train_data, val_data, test_data):
     return train_iterator, val_iterator, test_iterator
 
 
-train_data, val_data, test_data = load_imdb()
-print(train_data.examples[10], "\n--", val_data.examples[10], "\n --", test_data.examples[10])
+train_data, val_data, test_data, embedding_layer = load_imdb()
 print("Data loaded")
 train_iterator, val_iterator, test_iterator = get_iterators(batch_size, train_data, val_data, test_data)
 print("Iterators loaded")
 
-net = model.KimModel(embedding_dim=embedding_dim, input_channels=input_channels,
+net = model.KimModel(embedding_layer=embedding_layer, embedding_dim=embedding_dim, input_channels=input_channels,
                      filter_heights=filter_heights, filter_count=filter_count, dropout_p=dropout_p, classes=classes)
 print("Model loaded")
 

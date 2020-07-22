@@ -1,25 +1,22 @@
 import torch
 import torch.nn.functional as F
-import gensim
 
 
 class KimModel(torch.nn.Module):
     """ One layer CNN with (def=100) filters of (def=[3,4,5]) varying heights; dropout and L2 weight constraint """
 
-    # Takes in word2vec embeddings from main
-    def __init__(self, embedding_dim=300, input_channels=1, filter_heights=[3, 4, 5],
+    def __init__(self, embedding_layer=None, embedding_dim=300, input_channels=1, filter_heights=[3, 4, 5],
                  filter_count=100, dropout_p=0.5, classes=2):
 
         super(KimModel, self).__init__()
 
-        # Embeddings: the input to the module is a list of indices, and the output is the corresponding feature vectors
-        # Using word2vec features pre-trained on Google News corpus
-        model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin',
-                                                                binary=True,
-                                                                unicode_errors='ignore')
-        weights = torch.FloatTensor(model.vectors)
-        self.embed = torch.nn.Embedding.from_pretrained(torch.FloatTensor(weights))
-        # There are (filter_heights) sets of (filter_count) different channels IN PARALLEL
+        # # Embeddings: the input to the module is a list of indices, and the output is the corresponding feature vectors
+        # # Using word2vec features pre-trained on Google News corpus
+        # model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin',
+        #                                                         binary=True,
+        #                                                         unicode_errors='ignore')
+        # weights = torch.FloatTensor(model.vectors)
+        self.embed = embedding_layer
         self.convs1 = torch.nn.ModuleList([torch.nn.Conv2d(in_channels=input_channels,
                                                            out_channels=filter_count,
                                                            kernel_size=(H, embedding_dim)) for H in filter_heights])
