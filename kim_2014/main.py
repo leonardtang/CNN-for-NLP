@@ -1,13 +1,16 @@
 import torch
 import random
 import torchtext
+import matplotlib.pyplot as plt
+import numpy as np
 import model
 import train
+import test
 from torchtext import data
 from torchtext import datasets
 
 # Training hyper-parameters
-batch_size = 16
+batch_size = 8
 n_epochs = 20
 learning_rate = 1.0
 
@@ -64,4 +67,35 @@ if torch.cuda.device_count() > 1:
     net = torch.nn.DataParallel(net)
 net = net.to(device)
 
-train.train(net, device, train_iterator, val_iterator, batch_size, n_epochs, learning_rate)
+model_state_dict, train_loss_hist, train_acc_hist, val_loss_hist, val_acc_hist = \
+    train.train(net, device, train_iterator, val_iterator, batch_size, n_epochs, learning_rate)
+torch.save(model_state_dict(), "model_weights.pth")
+
+# Plotting loss and accuracy history
+fig, (ax1, ax2) = plt.subplots(2)
+
+# Loss history
+ax1.set_title("Loss vs. Number of Training Epochs")
+ax1.set(xlabel="Training Epoch", ylabel="Loss")
+ax1.plot(range(1, len(train_loss_hist) + 1), train_loss_hist, label="Training")
+ax1.plot(range(1, len(val_loss_hist) + 1), val_loss_hist, label="Validation")
+print(np.concatenate((train_loss_hist, val_loss_hist)))
+print(np.amax(np.concatenate((train_loss_hist, val_loss_hist))))
+ax1.set_ylim((0, 1.25 * np.amax(np.concatenate((train_loss_hist, val_loss_hist), axis=0, out=None)).detach().cpu()))
+ax1.set_xticks(np.arange(1, n_epochs + 1, 1.0))
+ax1.legend()
+
+# Accuracy history
+ax2.set_title("Accuracy vs. Number of Training Epochs")
+ax2.set(xlabel="Training Epoch", ylabel="Accuracy")
+ax2.plot(range(1, n_epochs + 1), train_acc_hist, label="Training")
+ax2.plot(range(1, n_epochs + 1), val_acc_hist, label="Validation")
+ax2.set_ylim(0, 100)
+ax2.set_xticks(np.arange(1, n_epochs + 1, 1.0))
+ax2.legend()
+
+plt.tight_layout()
+plt.savefig("CNN-for-NLP-Trial-1.png")
+
+test_acc = test.test(net, device, test_iterator)
+print(test_acc)

@@ -1,15 +1,8 @@
-import os
-import sys
 import time
 import copy
 import torch
-import torch.nn.functional as F
 from torch import nn
 from torch.autograd import Variable
-
-""" Code structure -- have ALL hyperparameters be adjustable in main.py
-    batch_size, learning_rate, model parameters, etc. ALL will flow into 
-    function calls and instances from main.py """
 
 
 def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, learning_rate=1.0):
@@ -31,7 +24,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     val_acc_history = []
     train_loss_history = []
     train_acc_history = []
-    best_model_wts = copy.deepcopy(model.state_dict())
+    model_weights = copy.deepcopy(model.state_dict())
 
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
@@ -104,4 +97,4 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
 
     print("Training finished in %.2f" % (time.time() - since))
 
-    return best_model_wts
+    return model_weights, train_loss_history, train_acc_history, val_loss_history, val_acc_history
