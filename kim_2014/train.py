@@ -65,16 +65,16 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
 
             # Print average batch loss and time elapsed after every 10 mini-batches
             if (i + 1) % (print_every + 1) == 0:
-                print("Epoch {}, {:d}% \t Average Batch Loss: {.2f} took: {.2f}s".format(
+                print("Epoch %d, %d %% \t Average Batch Loss: %.2f took: %.2fs" % (
                     epoch + 1, int(100 * (i + 1) / n_batches), batch_loss / print_every, time.time() - since))
                 # Reset running batch loss
                 training_loss += batch_loss
                 batch_loss = 0.0
 
         average_train_loss = training_loss / n_batches
-        print("Average Training Loss Per Batch: {.2f}".format(average_train_loss))
+        print("Average Training Loss Per Batch: %.2f" % average_train_loss)
         average_train_accuracy = 100 * training_corrects / (n_batches * batch_size)
-        print("Training Accuracy: % d %%" % average_train_accuracy)
+        print("Training Accuracy: %.2f %%" % average_train_accuracy)
         train_loss_history.append(average_train_loss)
         train_acc_history.append(average_train_accuracy)
 
@@ -99,9 +99,9 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         val_loss_history.append(average_val_loss)
         val_acc_history.append(val_accuracy)
 
-        print("Validation Loss: {.2f}".format(average_val_loss))
-        print("Validation Accuracy: % d %%" % average_val_accuracy)
+        print("Validation Loss: %.2f" % average_val_loss)
+        print("Validation Accuracy: %.2f %%" % average_val_accuracy)
 
-    print("Training finished in {.2f}".format(time.time() - since))
+    print("Training finished in %.2f" % (time.time() - since))
 
     return best_model_wts
