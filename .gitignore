@@ -106,4 +106,9 @@ GoogleNews-vectors-negative300.bin
 aclImdb/
 .data/
 .vector_cache/
-__pycache__/
+
+# Byte-compiled / optimized / DLL files
+kim_2014/__pycache__/
+*.py[cod]
+
+/.idea/workspace.xml
