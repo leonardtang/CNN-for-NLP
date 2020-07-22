@@ -7,7 +7,7 @@ from torchtext import data
 from torchtext import datasets
 
 # Training hyper-parameters
-batch_size = 16
+batch_size = 8
 n_epochs = 20
 learning_rate = 1.0
 
@@ -58,5 +58,7 @@ print("Iterators loaded")
 net = model.KimModel(embedding_layer=embedding_layer, embedding_dim=embedding_dim, input_channels=input_channels,
                      filter_heights=filter_heights, filter_count=filter_count, dropout_p=dropout_p, classes=classes)
 print("Model loaded")
+
+net = net.to(device)
 
 train.train(net, device, train_iterator, val_iterator, batch_size, n_epochs, learning_rate)
