@@ -59,6 +59,7 @@ net = model.KimModel(embedding_layer=embedding_layer, embedding_dim=embedding_di
                      filter_heights=filter_heights, filter_count=filter_count, dropout_p=dropout_p, classes=classes)
 print("Model loaded")
 
+print("GPU count:", torch.cuda.device_count())
 if torch.cuda.device_count() > 1:
     net = torch.nn.DataParallel(net)
 net = net.to(device)
