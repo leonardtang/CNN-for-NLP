@@ -29,7 +29,7 @@ random.seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 # Loading device
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
 
@@ -63,8 +63,8 @@ net = model.KimModel(embedding_layer=embedding_layer, embedding_dim=embedding_di
 print("Model loaded")
 
 print("GPU count:", torch.cuda.device_count())
-# if torch.cuda.device_count() > 1:
-#     net = torch.nn.DataParallel(net)
+if torch.cuda.device_count() > 1:
+    net = torch.nn.DataParallel(net)
 net = net.to(device)
 
 model_state_dict, train_loss_hist, train_acc_hist, val_loss_hist, val_acc_hist = \
