@@ -24,7 +24,6 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     val_acc_history = []
     train_loss_history = []
     train_acc_history = []
-    model_weights = copy.deepcopy(model.state_dict())
 
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
@@ -97,5 +96,6 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             print("Validation Accuracy: %.2f %%" % average_val_accuracy)
 
     print("Training finished in %.2f" % (time.time() - since))
+    model_weights = model.state_dict()
 
     return model_weights, train_loss_history, train_acc_history, val_loss_history, val_acc_history

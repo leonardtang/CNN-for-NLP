@@ -10,7 +10,7 @@ from torchtext import data
 from torchtext import datasets
 
 # Training hyper-parameters
-batch_size = 8
+batch_size = 32
 n_epochs = 20
 learning_rate = 1.0
 
@@ -40,7 +40,7 @@ def load_imdb(TEXT=data.Field(tokenize='spacy', batch_first=True),
               LABEL=data.LabelField(dtype=torch.long, batch_first=True)):
     train_data, test_data = datasets.IMDB.splits(TEXT, LABEL)
     train_data, val_data = train_data.split(split_ratio=0.8, random_state=random.seed(SEED))
-    TEXT.build_vocab(train_data, vectors="glove.6B.300d", max_size=1000, min_freq=10)
+    TEXT.build_vocab(train_data, vectors="glove.6B.300d", max_size=10000, min_freq=10)
     LABEL.build_vocab(test_data)
     embedding_layer = torch.nn.Embedding.from_pretrained(TEXT.vocab.vectors)
     return train_data, val_data, test_data, embedding_layer
