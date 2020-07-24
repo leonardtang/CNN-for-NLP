@@ -64,8 +64,10 @@ print("Model loaded")
 
 print("GPU count:", torch.cuda.device_count())
 if torch.cuda.device_count() > 1:
-    net = torch.nn.DataParallel(net, device_ids=[1, 2, 3])
+    net = torch.nn.DataParallel(net, device_ids=[1, 2, 3, 0])
 net = net.to(device)
+
+print("Model sent")
 
 model_state_dict, train_loss_hist, train_acc_hist, val_loss_hist, val_acc_hist = \
     train.train(net, device, train_iterator, val_iterator, batch_size, n_epochs, learning_rate)
