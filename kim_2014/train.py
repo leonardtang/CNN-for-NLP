@@ -6,7 +6,6 @@ from torch.autograd import Variable
 
 
 def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, learning_rate=1.0):
-
     print("===== HYPERPARAMETERS =====")
     print("batch_size=", batch_size)
     print("epochs=", n_epochs)
@@ -56,9 +55,15 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             optimizer.step()
 
             # Print average batch loss and time elapsed after every 10 mini-batches
-            if (i + 1) % (print_every + 1) == 0:
-                print("Epoch %d, %d %% \t Average Batch Loss: %.2f took: %.2fs" % (
-                    epoch + 1, int(100 * (i + 1) / n_batches), batch_loss / print_every, time.time() - since))
+
+            if (i + 1) % print_every == 0:
+                print('Epoch: {} [{}/{} ({:.0f}%)]'.format(epoch, (i + 1) * len(data),
+                                                           len(train_loader.dataset),
+                                                           100. * (i + 1) / len(train_loader)),
+                      end=" ")
+
+                print("\t Average Batch Loss: %.2f took: %.2fs" % (
+                    batch_loss / print_every, time.time() - since))
                 # Reset running batch loss
                 training_loss += batch_loss
                 batch_loss = 0.0
@@ -73,7 +78,6 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         # At the end of the epoch, do a pass on the validation set
         model.eval()
         running_val_loss = 0
-        val_accuracy = 0
         val_corrects = 0
         with torch.no_grad():
             for inputs, labels in val_loader:
