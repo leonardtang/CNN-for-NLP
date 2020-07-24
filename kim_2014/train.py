@@ -1,5 +1,5 @@
 import time
-import copy
+import math
 import torch
 from torch import nn
 from torch.autograd import Variable
@@ -59,7 +59,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             if (i + 1) % print_every == 0:
                 print('Epoch: {} [{}/{} ({:.0f}%)]'.format(epoch + 1, (i + 1) * len(data),
                                                            len(train_loader.dataset),
-                                                           int(100 * (i + 1)) / len(train_loader)),
+                                                           math.ceil((100. * (i + 1) / len(train_loader)))),
                       end="")
 
                 print("\tAverage Batch Loss: %.2f took: %.2fs" % (
