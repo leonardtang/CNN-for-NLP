@@ -57,7 +57,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             # Print average batch loss and time elapsed after every 10 mini-batches
 
             if (i + 1) % print_every == 0:
-                print('Epoch: {} [{}/{} ({:.0f}%)]'.format(epoch, (i + 1) * len(data),
+                print('Epoch: {} [{}/{} ({:.0f}%)]'.format(epoch + 1, (i + 1) * len(data),
                                                            len(train_loader.dataset),
                                                            int(100 * (i + 1)) / len(train_loader)),
                       end="")
@@ -100,6 +100,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             print("Validation Accuracy: %.2f %%" % average_val_accuracy)
 
     print("Training finished in %.2f" % (time.time() - since))
+    print('-' * 10)
     model_weights = model.state_dict()
 
     return model_weights, train_loss_history, train_acc_history, val_loss_history, val_acc_history
