@@ -44,6 +44,8 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         # One loop through training set
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
+            print(inputs)
+            print(inputs.size())
             inputs, labels = Variable(inputs), Variable(labels)
             inputs, labels = inputs.to(device), labels.to(device)
             print("Data moved to GPU")
