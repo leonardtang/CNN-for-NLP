@@ -46,6 +46,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             inputs, labels = data
             inputs, labels = Variable(inputs), Variable(labels)
             inputs, labels = inputs.to(device), labels.to(device)
+            print("Data moved to GPU")
             optimizer.zero_grad()
             outputs = model(inputs)
             _, predicted = torch.max(outputs.detach(), dim=1)
