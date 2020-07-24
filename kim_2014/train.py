@@ -24,16 +24,12 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     val_acc_history = []
     train_loss_history = []
     train_acc_history = []
-    print("Pre copy")
     model_weights = copy.deepcopy(model.state_dict())
-    print("Post copy")
 
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
     if torch.cuda.is_available():
         criterion = criterion.cuda()
-
-    print("Post criterion ad hoc stuff")
 
     for epoch in range(n_epochs):
         print('Epoch {}/{}'.format(epoch + 1, n_epochs))
@@ -45,15 +41,10 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         training_corrects = 0
 
         # One loop through training set
-        print("Pre-for loop")
         for i, data in enumerate(train_loader, 0):
-            print("Entering for loop")
             inputs, labels = data
-            print(inputs)
-            print(inputs.size())
             inputs, labels = Variable(inputs), Variable(labels)
             inputs, labels = inputs.to(device), labels.to(device)
-            print("Data moved to GPU")
             optimizer.zero_grad()
             outputs = model(inputs)
             _, predicted = torch.max(outputs.detach(), dim=1)
