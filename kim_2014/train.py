@@ -24,7 +24,9 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     val_acc_history = []
     train_loss_history = []
     train_acc_history = []
+    print("Pre copy")
     model_weights = copy.deepcopy(model.state_dict())
+    print("Post copy")
 
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
