@@ -34,6 +34,8 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
         model = model.cuda()
         criterion = criterion.cuda()
 
+    print("Post model ad hoc stuff")
+
     for epoch in range(n_epochs):
         print('Epoch {}/{}'.format(epoch + 1, n_epochs))
         print('-' * 10)

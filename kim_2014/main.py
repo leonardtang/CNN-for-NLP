@@ -64,7 +64,7 @@ print("Model loaded")
 
 print("GPU count:", torch.cuda.device_count())
 if torch.cuda.device_count() > 1:
-    net = torch.nn.DataParallel(net, device_ids=[1, 2, 3, 0])
+    net = torch.nn.DataParallel(net, device_ids=[1, 2, 3])
 net = net.to(device)
 
 print("Model sent")
