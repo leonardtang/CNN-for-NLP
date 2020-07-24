@@ -81,7 +81,7 @@ ax1.plot(range(1, len(train_loss_hist) + 1), train_loss_hist, label="Training")
 ax1.plot(range(1, len(val_loss_hist) + 1), val_loss_hist, label="Validation")
 print(np.concatenate((train_loss_hist, val_loss_hist)))
 print(np.amax(np.concatenate((train_loss_hist, val_loss_hist))))
-ax1.set_ylim((0, 1.25 * np.amax(np.concatenate((train_loss_hist, val_loss_hist), axis=0, out=None)).detach().cpu()))
+ax1.set_ylim((0, 1.25 * np.amax(np.concatenate((train_loss_hist, val_loss_hist), axis=0, out=None)).cpu()))
 ax1.set_xticks(np.arange(1, n_epochs + 1, 1.0))
 ax1.legend()
 

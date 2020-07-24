@@ -20,6 +20,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     since = time.time()
     n_batches = len(train_loader)
     print_every = n_batches // 10
+    print("Print every: ", print_every)
     val_loss_history = []
     val_acc_history = []
     train_loss_history = []
