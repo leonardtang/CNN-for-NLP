@@ -43,6 +43,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
 
         # One loop through training set
         for i, data in enumerate(train_loader, 0):
+            print("Entering for loop")
             inputs, labels = data
             print(inputs)
             print(inputs.size())
