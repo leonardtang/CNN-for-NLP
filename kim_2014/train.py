@@ -31,10 +31,9 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
     if torch.cuda.is_available():
-        model = model.cuda()
         criterion = criterion.cuda()
 
-    print("Post model ad hoc stuff")
+    print("Post criterion ad hoc stuff")
 
     for epoch in range(n_epochs):
         print('Epoch {}/{}'.format(epoch + 1, n_epochs))
