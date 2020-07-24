@@ -82,7 +82,6 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
                 val_outputs = model(inputs)
                 val_loss = criterion(val_outputs, labels)
                 running_val_loss += val_loss.item()
-                val_loss_history.append(val_loss)
 
                 _, predicted = torch.max(val_outputs.detach(), dim=1)
                 val_corrects += (predicted == labels).double().sum().item()
@@ -90,7 +89,7 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             average_val_accuracy = 100 * val_corrects / (len(val_loader) * batch_size)
             average_val_loss = running_val_loss / len(val_loader)
             val_loss_history.append(average_val_loss)
-            val_acc_history.append(val_accuracy)
+            val_acc_history.append(average_val_accuracy)
 
             print("Validation Loss: %.2f" % average_val_loss)
             print("Validation Accuracy: %.2f %%" % average_val_accuracy)
