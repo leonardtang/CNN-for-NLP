@@ -15,5 +15,4 @@ def test(model, device, test_loader):
             total += labels.size(0)  # labels is a Tensor with dimension [N,1], where N is batch sample size
 
     testing_accuracy = 100. * correct / total
-    print('Testing accuracy = % d.2f %%' % testing_accuracy)
     return testing_accuracy

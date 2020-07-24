@@ -96,4 +96,4 @@ plt.tight_layout()
 plt.savefig("CNN-for-NLP-Trial-2.png")
 
 test_acc = test.test(net, device, test_iterator)
-print("Test Accuracy: %d.2f %%" % test_acc)
+print("Test Accuracy: %.2f %%" % test_acc)
