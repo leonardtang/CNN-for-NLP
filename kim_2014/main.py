@@ -95,7 +95,7 @@ ax2.set_xticks(np.arange(1, n_epochs + 1, 1.0))
 ax2.legend()
 
 plt.tight_layout()
-plt.savefig("CNN-for-NLP-Trial-1.png")
+plt.savefig("CNN-for-NLP-Trial-2.png")
 
 test_acc = test.test(net, device, test_iterator)
 print(test_acc)
