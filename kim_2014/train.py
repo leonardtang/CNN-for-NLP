@@ -59,10 +59,10 @@ def train(model, device, train_loader, val_loader, batch_size, n_epochs=20, lear
             if (i + 1) % print_every == 0:
                 print('Epoch: {} [{}/{} ({:.0f}%)]'.format(epoch, (i + 1) * len(data),
                                                            len(train_loader.dataset),
-                                                           100. * (i + 1) / len(train_loader)),
-                      end=" ")
+                                                           int(100 * (i + 1)) / len(train_loader)),
+                      end="")
 
-                print("\t Average Batch Loss: %.2f took: %.2fs" % (
+                print("\tAverage Batch Loss: %.2f took: %.2fs" % (
                     batch_loss / print_every, time.time() - since))
                 # Reset running batch loss
                 training_loss += batch_loss
