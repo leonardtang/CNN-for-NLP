@@ -10,7 +10,7 @@ from torchtext import data
 from torchtext import datasets
 
 # Training hyper-parameters
-batch_size = 8
+batch_size = 2
 n_epochs = 20
 learning_rate = 1.0
 
