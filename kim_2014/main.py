@@ -69,7 +69,7 @@ net = net.to(device)
 
 model_state_dict, train_loss_hist, train_acc_hist, val_loss_hist, val_acc_hist = \
     train.train(net, device, train_iterator, val_iterator, batch_size, n_epochs, learning_rate)
-torch.save(model_state_dict(), "model_weights.pth")
+torch.save(model_state_dict, "model_weights.pth")
 
 # Plotting loss and accuracy history
 fig, (ax1, ax2) = plt.subplots(2)
